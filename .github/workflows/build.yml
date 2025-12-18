@@ -2,31 +2,46 @@ name: Build APK
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: subosito/flutter-action@v2
+      - name: Set up Java
+        uses: actions/setup-java@v4
         with:
-          flutter-version: "3.16.5"
-          cache: true
+          distribution: 'temurin'
+          java-version: '17'
 
-      - name: Create Android project
-        run: |
-          flutter create .
-      
-      - name: Pub get
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.16.5'
+          channel: stable
+
+      - name: Flutter doctor
+        run: flutter doctor -v
+
+      - name: Get dependencies
         run: flutter pub get
+
+      - name: Recreate Android project
+        run: flutter create .
+
+      - name: Accept Android licenses
+        run: yes | flutter doctor --android-licenses
 
       - name: Build APK
         run: flutter build apk --release
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
           name: app-release
           path: build/app/outputs/flutter-apk/app-release.apk
