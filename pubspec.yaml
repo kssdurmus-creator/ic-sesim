@@ -1,5 +1,5 @@
-name: ic_ses
-description: İç Ses – insanların yazıp konuşabileceği sade uygulama
+name: ic_sesim
+description: İç Sesim – insanların yazıp konuşabileceği sade uygulama
 publish_to: "none"
 
 version: 1.0.0+1
