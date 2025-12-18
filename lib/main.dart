@@ -1,113 +1,105 @@
-// Copyright 2020 The Flutter team. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:platform_channels/src/add_pet_details.dart';
-import 'package:platform_channels/src/event_channel_demo.dart';
-import 'package:platform_channels/src/method_channel_demo.dart';
-import 'package:platform_channels/src/pet_list_screen.dart';
-import 'package:platform_channels/src/platform_image_demo.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 void main() {
-  runApp(const PlatformChannelSample());
+  runApp(const IcSesApp());
 }
 
-class PlatformChannelSample extends StatelessWidget {
-  const PlatformChannelSample({super.key});
+class IcSesApp extends StatelessWidget {
+  const IcSesApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Platform Channel Sample',
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'İç Ses',
       theme: ThemeData(
-        snackBarTheme: SnackBarThemeData(
-          backgroundColor: Colors.blue[500],
-        ),
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: const Color(0xFF0F172A),
+        fontFamily: 'Roboto',
       ),
-      routerConfig: router(),
+      home: const HomeScreen(),
     );
   }
 }
 
-GoRouter router([String? initialLocation]) {
-  return GoRouter(
-    initialLocation: initialLocation ?? '/',
-    routes: [
-      GoRoute(
-        path: '/',
-        builder: (context, state) => const HomePage(),
-        routes: [
-          GoRoute(
-            path: 'methodChannelDemo',
-            builder: (context, state) => const MethodChannelDemo(),
-          ),
-          GoRoute(
-            path: 'eventChannelDemo',
-            builder: (context, state) => const EventChannelDemo(),
-          ),
-          GoRoute(
-            path: 'platformImageDemo',
-            builder: (context, state) => const PlatformImageDemo(),
-          ),
-          GoRoute(
-            path: 'petListScreen',
-            builder: (context, state) => const PetListScreen(),
-            routes: [
-              GoRoute(
-                path: 'addPetDetails',
-                builder: (context, state) => const AddPetDetails(),
-              ),
-            ],
-          ),
-        ],
-      ),
-    ],
-  );
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class DemoInfo {
-  final String demoTitle;
-  final String demoRoute;
+class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController _controller = TextEditingController();
+  final FlutterTts _tts = FlutterTts();
 
-  DemoInfo(this.demoTitle, this.demoRoute);
-}
+  @override
+  void initState() {
+    super.initState();
+    _tts.setLanguage("tr-TR");
+    _tts.setSpeechRate(0.45);
+  }
 
-List<DemoInfo> demoList = [
-  DemoInfo('MethodChannel Demo', '/methodChannelDemo'),
-  DemoInfo('EventChannel Demo', '/eventChannelDemo'),
-  DemoInfo('Platform Image Demo', '/platformImageDemo'),
-  DemoInfo('BasicMessageChannel Demo', '/petListScreen'),
-];
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  void _konustur() {
+    if (_controller.text.trim().isEmpty) return;
+    _tts.speak(_controller.text);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Platform Channel Sample')),
-      body: ListView(
-        children: demoList.map((demoInfo) => DemoTile(demoInfo)).toList(),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "Merhaba,\nben senin iç sesinim.\nBuradayım ve seni dinliyorum.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 32),
+              TextField(
+                controller: _controller,
+                maxLines: 5,
+                decoration: InputDecoration(
+                  hintText: "İçinden geçenleri buraya yaz...",
+                  filled: true,
+                  fillColor: const Color(0xFF1E293B),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: ElevatedButton(
+                  onPressed: _konustur,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.greenAccent.shade400,
+                    foregroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  child: const Text(
+                    "İç Ses Konuşsun",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
-    );
-  }
-}
-
-/// This widget is responsible for displaying the [ListTile] on [HomePage].
-class DemoTile extends StatelessWidget {
-  final DemoInfo demoInfo;
-
-  const DemoTile(this.demoInfo, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(demoInfo.demoTitle),
-      onTap: () {
-        context.go(demoInfo.demoRoute);
-      },
     );
   }
 }
