@@ -1,6 +1,6 @@
 name: ic_sesim
-description: İç Sesim – insanların yazıp konuşabileceği sade uygulama
-publish_to: "none"
+description: Ic Ses uygulamasi
+publish_to: 'none'
 
 version: 1.0.0+1
 
@@ -12,11 +12,6 @@ dependencies:
     sdk: flutter
 
   flutter_tts: ^3.8.5
-  cupertino_icons: ^1.0.6
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
 
 flutter:
   uses-material-design: true
