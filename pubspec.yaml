@@ -1,5 +1,5 @@
 name: ic_sesim
-description: Ic Ses uygulamasi
+description: Ic Ses – insanların içini dökebileceği sade bir uygulama
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -10,8 +10,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
   flutter_tts: ^3.8.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
 
 flutter:
   uses-material-design: true
